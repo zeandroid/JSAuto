@@ -1,0 +1,68 @@
+name: Fetch Designer Jobs Daily
+
+on:
+  # Run at midnight UTC every day
+  schedule:
+    - cron: '0 0 * * *'
+  
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  fetch-jobs:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Use a personal access token to push changes back
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Fetch designer jobs from Creative Circle
+        run: |
+          python scripts/fetch_creative_circle.py
+        env:
+          # Environment variables can be set here if needed
+          DATA_DIR: ./data
+          DESIGNER_CSV_FILE: designer_jobs.csv
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet data/designer_jobs.csv; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Changes detected in designer_jobs.csv"
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/designer_jobs.csv
+          git commit -m "chore: update designer jobs - $(date -u +'%Y-%m-%d %H:%M:%S')"
+          git push
+
+      - name: Summary
+        run: |
+          if [ -f data/designer_jobs.csv ]; then
+            total_jobs=$(tail -n +2 data/designer_jobs.csv | wc -l)
+            echo "### Job Fetch Summary" >> $GITHUB_STEP_SUMMARY
+            echo "Total designer jobs in database: $total_jobs" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Status**: $([ '${{ steps.check_changes.outputs.has_changes }}' = 'true' ] && echo '✅ New jobs found and committed' || echo '⚪ No new jobs (all current)')" >> $GITHUB_STEP_SUMMARY
+          fi
