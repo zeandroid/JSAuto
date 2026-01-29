@@ -9,9 +9,6 @@ on:
   # Allow manual trigger for testing
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   fetch-jobs:
     runs-on: ubuntu-latest
