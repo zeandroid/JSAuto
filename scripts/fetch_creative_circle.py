@@ -99,8 +99,13 @@ class CreativeCircleFetcher:
                     "buid": buid,
                 }
                 
+                # Add User-Agent to bypass basic IP blocks
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                }
+                
                 response = requests.get(
-                    CREATIVE_CIRCLE_SEARCH_ENDPOINT, params=params, timeout=10
+                    CREATIVE_CIRCLE_SEARCH_ENDPOINT, params=params, headers=headers, timeout=10
                 )
                 response.raise_for_status()
                 data = response.json()
@@ -256,8 +261,11 @@ class CreativeCircleFetcher:
         """
         try:
             params = {"id": job_id, "buid": 3}
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            }
             response = requests.get(
-                CREATIVE_CIRCLE_DETAILS_ENDPOINT, params=params, timeout=10
+                CREATIVE_CIRCLE_DETAILS_ENDPOINT, params=params, headers=headers, timeout=10
             )
             response.raise_for_status()
             data = response.json()
