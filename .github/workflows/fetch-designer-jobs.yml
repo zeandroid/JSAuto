@@ -3,7 +3,8 @@ name: Fetch Designer Jobs Daily
 on:
   # Run at midnight UTC every day
   schedule:
-    - cron: '0 5 * * *'
+    - cron: '30 7 * * *'
+    
   
   # Allow manual trigger for testing
   workflow_dispatch:
