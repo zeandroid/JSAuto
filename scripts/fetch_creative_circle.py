@@ -25,10 +25,19 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from lib.api_client import APIClient
 from lib.job_csv import JobCSVWriter
 
-# Configure logging
+# Configure logging with both console and file output
+log_dir = Path(os.getenv("LOG_DIR", "./logs"))
+log_dir.mkdir(parents=True, exist_ok=True)
+log_file = log_dir / f"fetch_creative_circle_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+
+# Configure root logger
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(log_file),
+        logging.StreamHandler(),
+    ]
 )
 logger = logging.getLogger(__name__)
 
@@ -128,8 +137,22 @@ class CreativeCircleFetcher:
         csv_rows = [self._format_job_for_csv(job) for job in designer_jobs]
         
         if csv_rows:
+            # Append new jobs to CSV
             self.csv_writer.append_jobs(csv_rows)
-            logger.info(f"Saved {len(csv_rows)} new designer jobs to CSV")
+            logger.info(f"Appended {len(csv_rows)} new designer jobs to CSV")
+            
+            # Read all jobs from CSV
+            all_jobs_in_csv = self.csv_writer.read_jobs()
+            
+            # Sort by job_id descending
+            all_jobs_in_csv.sort(
+                key=lambda x: int(x.get("job_id", 0)) if x.get("job_id") else 0,
+                reverse=True
+            )
+            
+            # Write sorted jobs back to CSV
+            self.csv_writer.write_jobs(all_jobs_in_csv)
+            logger.info(f"Rewrote CSV with {len(all_jobs_in_csv)} jobs sorted by job_id DESC")
         
         return {
             "total_fetched": len(all_jobs),
@@ -306,13 +329,13 @@ def main():
         print("=" * 80 + "\n")
         
         if results["designer_jobs_found"] > 0:
-            # Read and display summary
+            # Read and display summary (already sorted by fetch_jobs)
             csv_writer = JobCSVWriter(results["csv_file"])
             all_jobs = csv_writer.read_jobs()
             
             print(f"✓ Successfully saved {len(all_jobs)} designer jobs to CSV\n")
-            print("Latest 5 designer jobs:")
-            for i, job in enumerate(all_jobs[-5:], 1):
+            print("Top 5 newest designer jobs (sorted by job ID DESC):")
+            for i, job in enumerate(all_jobs[:5], 1):
                 print(f"\n{i}. {job['job_title']} @ {job['company_name']}")
                 print(f"   Location: {job['location']}")
                 print(f"   Rate: ${job['hourly_min']} - ${job['hourly_max']}/hr")

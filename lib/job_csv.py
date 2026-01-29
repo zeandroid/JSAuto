@@ -103,3 +103,20 @@ class JobCSVWriter:
         """
         jobs = self.read_jobs()
         return {job.get("job_id", "") for job in jobs if job.get("job_id")}
+
+    def write_jobs(self, jobs: List[Dict[str, Any]]) -> None:
+        """
+        Write jobs to CSV file (overwrites existing file).
+
+        Args:
+            jobs: List of dictionaries with job data.
+        """
+        with open(self.filepath, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=CSV_HEADERS)
+            writer.writeheader()
+            
+            for job_dict in jobs:
+                row = {key: job_dict.get(key, "") for key in CSV_HEADERS}
+                writer.writerow(row)
+        
+        logger.info(f"Wrote {len(jobs)} jobs to {self.filepath}")
