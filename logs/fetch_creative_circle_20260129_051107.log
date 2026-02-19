@@ -1,0 +1,17 @@
+2026-01-29 05:11:07,400 - __main__ - INFO - Starting Creative Circle job fetcher for designer Olga
+2026-01-29 05:11:07,400 - __main__ - INFO - Starting fetch: 5 pages, work location type 3
+2026-01-29 05:11:07,400 - __main__ - INFO - Existing job IDs in CSV: 26
+2026-01-29 05:11:07,400 - __main__ - INFO - Fetching page 1...
+2026-01-29 05:11:08,568 - __main__ - INFO -   Found 20 jobs on page 1
+2026-01-29 05:11:10,503 - __main__ - INFO - Fetching page 2...
+2026-01-29 05:11:11,657 - __main__ - INFO -   Found 20 jobs on page 2
+2026-01-29 05:11:11,658 - __main__ - INFO - Fetching page 3...
+2026-01-29 05:11:12,816 - __main__ - INFO -   Found 20 jobs on page 3
+2026-01-29 05:11:12,816 - __main__ - INFO - Fetching page 4...
+2026-01-29 05:11:13,958 - __main__ - INFO -   Found 20 jobs on page 4
+2026-01-29 05:11:13,959 - __main__ - INFO - Fetching page 5...
+2026-01-29 05:11:14,875 - __main__ - INFO -   Found 11 jobs on page 5
+2026-01-29 05:11:14,879 - lib.job_csv - INFO - Appended 2 jobs to data/designer_jobs.csv
+2026-01-29 05:11:14,879 - __main__ - INFO - Appended 2 new designer jobs to CSV
+2026-01-29 05:11:14,880 - lib.job_csv - INFO - Wrote 28 jobs to data/designer_jobs.csv
+2026-01-29 05:11:14,880 - __main__ - INFO - Rewrote CSV with 28 jobs sorted by job_id DESC

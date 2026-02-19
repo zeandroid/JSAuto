@@ -118,7 +118,7 @@ class CreativeCircleFetcher:
                     job_title = job.get("jobTitle", "").lower()
                     
                     # Check if 'designer' appears in job title
-                    if "designer" in job_title:
+                    if "designer" in job_title or "creative director" in job_title:
                         job_id = job.get("Id")
                         
                         # Skip if already in CSV
