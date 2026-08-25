@@ -44,7 +44,7 @@ jobs:
       - name: Upload CSV to FTP
         uses: appleboy/scp-action@v1
         with:
-          server: ${{ secrets.FTP_HOST }}
+          host: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
