@@ -41,6 +41,16 @@ jobs:
           DATA_DIR: ./data
           DESIGNER_CSV_FILE: designer_jobs.csv
 
+      - name: Upload CSV to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./data/
+          remote-dir: /home/github_report/jobs/
+          protocol: ftps
+
       - name: Check for changes
         id: check_changes
         run: |
