@@ -42,14 +42,15 @@ jobs:
           DESIGNER_CSV_FILE: designer_jobs.csv
 
       - name: Upload CSV to FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        uses: appleboy/scp-action@v1
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./data/
-          remote-dir: /home/github_report/jobs/
-          protocol: sftp
+          port: 22
+          source: "data/*"
+          target: "/home/github_report/jobs/"
+          strip_components: 1
 
       - name: Check for changes
         id: check_changes
