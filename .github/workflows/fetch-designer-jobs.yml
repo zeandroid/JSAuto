@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./data/
           remote-dir: /home/github_report/jobs/
-          protocol: ftps
+          protocol: sftp
 
       - name: Check for changes
         id: check_changes
