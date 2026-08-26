@@ -41,16 +41,13 @@ jobs:
           DATA_DIR: ./data
           DESIGNER_CSV_FILE: designer_jobs.csv
 
-      - name: Upload CSV to FTP
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 22
-          source: "data/*"
-          target: "/home/github_report/jobs/"
-          strip_components: 1
+      - name: Upload to DreamHost
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+          sshpass -p "${{ secrets.FTP_PASSWORD }}" \
+            scp -o StrictHostKeyChecking=no -P 22 -r data/* \
+            "${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/github_report/jobs/"
 
       - name: Check for changes
         id: check_changes
