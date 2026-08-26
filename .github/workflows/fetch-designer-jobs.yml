@@ -47,7 +47,7 @@ jobs:
           sudo apt-get install -y sshpass
           sshpass -p "${{ secrets.FTP_PASSWORD }}" \
             scp -o StrictHostKeyChecking=no -P 22 -r data/* \
-            "${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/github_report/jobs/"
+            "${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_HOST }}:/home/github_report/jobs/"
 
       - name: Check for changes
         id: check_changes
